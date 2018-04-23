@@ -1,0 +1,30 @@
+register /usr/local/hive/lib/hive-exec-1.2.1.jar;
+register /usr/local/hive/lib/hive-common-1.2.1.jar;
+data1 = LOAD 'hdfs://localhost:54310/user/hive/warehouse/project.db/h1b_final' USING PigStorage('\t') as (s_no:double,case_status:chararray,employer_name:chararray,soc_name:chararray,job_title:chararray,full_time_position:chararray,prevailing_wage:double,year:chararray,worksite:chararray,longitude,latitude);
+data2= FILTER data1 by year=='2011';
+data3= group data2 by job_title;
+data4= foreach data3 generate group, COUNT($1);
+data5= FILTER data1 by year=='2012';
+data6= group data5 by job_title;
+data7= foreach data6 generate group, COUNT($1);
+data8= FILTER data1 by year=='2013';
+data9= group data8 by job_title;
+data10= foreach data9 generate group, COUNT($1);
+data11= FILTER data1 by year=='2014';
+data12= group data11 by job_title;
+data13= foreach data12 generate group, COUNT($1);
+data14= FILTER data1 by year=='2015';
+data15= group data14 by job_title;
+data16= foreach data15 generate group, COUNT($1);
+data17= FILTER data1 by year=='2016';
+data18= group data17 by job_title;
+data19= foreach data18 generate group, COUNT($1);
+data20= join data4 by $0,data7 by $0,data10 by $0,data13 by $0,data16 by $0,data19 by $0;
+data21= foreach data20 generate $0,$1,$3,$5,$7,$9,$11;
+data22= foreach data21  generate $0,(float)($6-$5)*100/$5,(float)($5-$4)*100/$4,(float)($4-$3)*100/$3,(float)($3-$2)*100/$2,(float)($2-$1)*100/$1;
+data23= foreach data22 generate $0,($1+$2+$3+$4+$5)/5;
+data24= order data23 by $1 desc;
+data25 = limit data24 5;
+dump data25;
+
+
