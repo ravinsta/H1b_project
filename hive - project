@@ -1,0 +1,87 @@
+h1b application:
+1 a) Is the number of petitions with Data Engineer job title increasing over time?
+
+  mapreduce que1a.java -- project.jar
+
+ b) Find top 5 job titles who are having highest avg growth in applications.[ALL]
+
+   pig - que1b.pig
+
+2 a) Which part of the US has the most Data Engineer jobs for each year?
+
+select worksite, count(*) as tot, year  from h1b_final where LOWER(job_title) like '%data engineer%' and year = 2011 group by worksite,year order by tot desc limit 5;
+select worksite, count(*) as tot, year  from h1b_final where LOWER(job_title) like '%data engineer%' and year = 2012 group by worksite,year order by tot desc limit 5;
+select worksite, count(*) as tot, year  from h1b_final where LOWER(job_title) like '%data engineer%' and year = 2013 group by worksite,year order by tot desc limit 5;
+select worksite, count(*) as tot, year  from h1b_final where LOWER(job_title) like '%data engineer%' and year = 2014 group by worksite,year order by tot desc limit 5;
+select worksite, count(*) as tot, year  from h1b_final where LOWER(job_title) like '%data engineer%' and year = 2015 group by worksite,year order by tot desc limit 5;
+select worksite, count(*) as tot, year  from h1b_final where LOWER(job_title) like '%data engineer%' and year = 2016 group by worksite,year order by tot desc limit 5;
+
+
+b) find top 5 locations in the US who have got certified visa for each year.[certified]
+
+select worksite,count(*) as total from h1b_final where case_status="CERTIFIED" and year='2011' group by worksite order by total desc limit 5;
+select worksite,count(*) as total from h1b_final where case_status="CERTIFIED" and year='2012' group by worksite order by total desc limit 5;
+select worksite,count(*) as total from h1b_final where case_status="CERTIFIED" and year='2013' group by worksite order by total desc limit 5;
+select worksite,count(*) as total from h1b_final where case_status="CERTIFIED" and year='2014' group by worksite order by total desc limit 5;
+select worksite,count(*) as total from h1b_final where case_status="CERTIFIED" and year='2015' group by worksite order by total desc limit 5;
+select worksite,count(*) as total from h1b_final where case_status="CERTIFIED" and year='2016' group by worksite order by total desc limit 5;
+
+3)Which industry(SOC_NAME) has the most number of Data Scientist positions?
+ mapreduce -- que3.java -- project.jar
+
+4)Which top 5 employers file the most petitions each year? - Case Status – ALL
+
+select employer_name,count(*) as total from h1b_final where year='2011' group by employer_name order by total desc limit 5;
+select employer_name,count(*) as total from h1b_final where year='2012' group by employer_name order by total desc limit 5;
+select employer_name,count(*) as total from h1b_final where year='2013' group by employer_name order by total desc limit 5;
+select employer_name,count(*) as total from h1b_final where year='2014' group by employer_name order by total desc limit 5;
+select employer_name,count(*) as total from h1b_final where year='2015' group by employer_name order by total desc limit 5;
+select employer_name,count(*) as total from h1b_final where year='2016' group by employer_name order by total desc limit 5;
+
+5) Find the most popular top 10 job positions for H1B visa applications for each year?
+a) for all the applications
+select job_title,count(*) as total from h1b_final where year='2011' group by job_title order by total desc limit 10;
+select job_title,count(*) as total from h1b_final where year='2012' group by job_title order by total desc limit 10;
+select job_title,count(*) as total from h1b_final where year='2013' group by job_title order by total desc limit 10;
+select job_title,count(*) as total from h1b_final where year='2014' group by job_title order by total desc limit 10;
+select job_title,count(*) as total from h1b_final where year='2015' group by job_title order by total desc limit 10;
+select job_title,count(*) as total from h1b_final where year='2016' group by job_title order by total desc limit 10;
+
+b) for only certified applications.
+select job_title,count(*) as total from h1b_final where case_status="CERTIFIED" and year='2011' group by job_title order by total desc limit 10;
+select job_title,count(*) as total from h1b_final where case_status="CERTIFIED" and year='2012' group by job_title order by total desc limit 10;
+select job_title,count(*) as total from h1b_final where case_status="CERTIFIED" and year='2013' group by job_title order by total desc limit 10;
+select job_title,count(*) as total from h1b_final where case_status="CERTIFIED" and year='2014' group by job_title order by total desc limit 10;
+select job_title,count(*) as total from h1b_final where case_status="CERTIFIED" and year='2015' group by job_title order by total desc limit 10;
+select job_title,count(*) as total from h1b_final where case_status="CERTIFIED" and year='2016' group by job_title order by total desc limit 10;
+
+6) Find the percentage and the count of each case status on total applications for each year. Create a line graph depicting the pattern of All the cases over the period of time.
+
+que6.pig
+
+7) Create a bar graph to depict the number of applications for each year [All]
+mapreduce que7.java -- project.jar
+
+select year, count(*) from h1b_final group by year;
+
+8) Find the average Prevailing Wage for each Job for each Year (take part time and full time separate). Arrange the output in descending order - [Certified and Certified Withdrawn.]
+    que8a.pig -- full time
+    que8b.pig -- part time
+9) Which are the employers along with the number of petitions who have the success rate more than 70%  in petitions. (total petitions filed 1000 OR more than 1000) ?
+    que9.pig
+10) Which are the  job positions along with the number of petitions which have the success rate more than 70%  in petitions (total petitions filed 1000 OR more than 1000)?
+   que10.pig
+11) Export result for question no 10 to MySql database.
+  sqoop export --connect jdbc:mysql://localhost/question11 --username root --password root --table que11 --update-mode allowinsert  --export-dir /home/hduser/Pig_answer/que10/p* --input-fields-terminated-by '\t';
+
+hadoop fs -mkdir -p /Pig/Question10
+hadoop fs -put /home/hduser/Pig_answer/que10/p* /Pig/Question10/
+mysql -u root -p root
+ -e 'select * from question11.que11';
+   
+    
+    
+
+
+
+
